@@ -38,7 +38,7 @@ public class SecurityController {
         return ResponseEntity.ok("Role added to the user successfully");
     }
 
-    //******Dexieme methode*****////
+    //******Dexieme methode*****//// problem in body
 
 //    @PostMapping("/users/{username}/roles/{roleName}")
 //    public ResponseEntity<String> addRoleToUser2(@PathVariable String username, @PathVariable String roleName) throws Exception {
