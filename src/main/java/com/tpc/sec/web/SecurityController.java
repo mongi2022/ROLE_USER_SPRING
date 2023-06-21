@@ -1,11 +1,10 @@
 package com.tpc.sec.web;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tpc.sec.entities.AppRole;
 import com.tpc.sec.entities.AppUser;
 import com.tpc.sec.services.SecurityServiceImpl;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,7 +14,7 @@ import java.util.List;
 public class SecurityController {
     private SecurityServiceImpl securityService;
 
-    public SecurityController(SecurityServiceImpl securityService) {
+    public SecurityController(SecurityServiceImpl securityService, PasswordEncoder passwordEncoder) {
         this.securityService = securityService;
     }
 
@@ -37,7 +36,6 @@ public class SecurityController {
         securityService.addRoleToUser(userId, roleId);
         return ResponseEntity.ok("Role added to the user successfully");
     }
-
     //******Dexieme methode*****//// problem in body
 
 //    @PostMapping("/users/{username}/roles/{roleName}")

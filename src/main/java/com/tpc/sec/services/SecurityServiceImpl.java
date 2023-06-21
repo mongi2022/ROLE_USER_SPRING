@@ -6,12 +6,9 @@ import com.tpc.sec.exceptions.NotFoundRoleException;
 import com.tpc.sec.exceptions.NotFoundUserException;
 import com.tpc.sec.repositories.AppRoleRepository;
 import com.tpc.sec.repositories.AppUserRepository;
-import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
@@ -20,14 +17,19 @@ import java.util.List;
 public class SecurityServiceImpl implements SecurityService {
     private AppRoleRepository appRoleRepository;
     private AppUserRepository appUserRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public SecurityServiceImpl(AppRoleRepository appRoleRepository, AppUserRepository appUserRepository) {
+    public SecurityServiceImpl(AppRoleRepository appRoleRepository, AppUserRepository appUserRepository, PasswordEncoder passwordEncoder) {
         this.appRoleRepository = appRoleRepository;
         this.appUserRepository = appUserRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public AppUser addUser(AppUser appUser) {
+
+        String hashedPassword = passwordEncoder.encode(appUser.getPassword());
+        appUser.setPassword(hashedPassword);
         return appUserRepository.save(appUser);
     }
 
