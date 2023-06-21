@@ -6,11 +6,13 @@ import com.tpc.sec.exceptions.NotFoundRoleException;
 import com.tpc.sec.exceptions.NotFoundUserException;
 import com.tpc.sec.repositories.AppRoleRepository;
 import com.tpc.sec.repositories.AppUserRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -28,21 +30,35 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public AppUser addUser(AppUser appUser) {
 
-        String hashedPassword = passwordEncoder.encode(appUser.getPassword());
-        appUser.setPassword(hashedPassword);
-        return appUserRepository.save(appUser);
+//        AppUser user=  appUserRepository.findByUsername(appUser.getUsername());
+//        System.out.println(user);
+        List<String> users = appUserRepository.findAll().stream().map(u -> u.getUsername()).toList();
+        System.out.println(users);
+        if (users.contains(appUser.getUsername())){
+           return appUser;
+        }else {
+            String hashedPassword = passwordEncoder.encode(appUser.getPassword());
+            appUser.setPassword(hashedPassword);
+            return appUserRepository.save(appUser);
+        }
+
+
     }
 
 
     @Override
-    public void addRoleToUser(Long userId, Long roleId)  {
+    public ResponseEntity<String> addRoleToUser(Long userId, Long roleId) {
         AppUser user = appUserRepository.findById(userId).orElseThrow(() -> new NotFoundUserException("User not found"));
         AppRole role = appRoleRepository.findById(roleId).orElseThrow(() -> new NotFoundRoleException("Role not found"));
-
-        user.getAppRoles().add(role);
-        appUserRepository.save(user);
+        List<String> rolesUser = user.getAppRoles().stream().map(r->r.getRoleName()).toList();
+        if (rolesUser.contains(role.getRoleName())) {
+          return   ResponseEntity.ok("Role existe déja");
+        } else {
+            user.getAppRoles().add(role);
+            appUserRepository.save(user);
+          return    ResponseEntity.ok("Role added to the user successfully");
+        }
     }
-
     @Override
     public void addRoleToUser2(String username, String roleName) {
         AppUser user = appUserRepository.findByUsername(username);
@@ -60,7 +76,13 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public AppRole addRole(AppRole appRole) {
-        return appRoleRepository.save(appRole);
+        List<String> roles = appRoleRepository.findAll().stream().map(u -> u.getRoleName()).toList();
+        System.out.println(roles);
+        if (roles.contains(appRole.getRoleName())) {
+            return appRole;
+        } else {
+            return appRoleRepository.save(appRole);
+        }
     }
 
     @Override

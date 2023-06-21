@@ -33,8 +33,7 @@ public class SecurityController {
 
     @PostMapping("/users/{userId}/roles/{roleId}")
     public ResponseEntity<String> addRoleToUser(@PathVariable Long userId, @PathVariable Long roleId) throws Exception {
-        securityService.addRoleToUser(userId, roleId);
-        return ResponseEntity.ok("Role added to the user successfully");
+      return   securityService.addRoleToUser(userId, roleId);
     }
     //******Dexieme methode*****//// problem in body
 

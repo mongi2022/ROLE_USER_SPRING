@@ -2,6 +2,7 @@ package com.tpc.sec.services;
 
 import com.tpc.sec.entities.AppRole;
 import com.tpc.sec.entities.AppUser;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ public interface SecurityService {
 
     AppRole addRole(AppRole appRole);
 
-    void addRoleToUser(Long userId, Long roleId);
+    ResponseEntity<String> addRoleToUser(Long userId, Long roleId);
 
     void addRoleToUser2(String username, String roleName);
 
